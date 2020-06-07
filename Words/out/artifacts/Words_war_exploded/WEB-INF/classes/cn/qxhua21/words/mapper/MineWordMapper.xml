@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.qxhua21.words.mapper.MineWordMapper">
+    <select id="getListById" parameterType="User" resultType="Words">
+        select * from _words
+        INNER JOIN _user_word ON _words.id=_user_word.wordid
+        where _user_word.userid=#{id} and _user_word.history=0
+    </select>
+    <select id="getHistory" parameterType="User" resultType="Words">
+        select * from _words
+        INNER JOIN _user_word ON _words.id=_user_word.wordid
+        where _user_word.userid=#{id} and _user_word.history=1
+    </select>
+    <select id="getAllWord" parameterType="List" resultType="Words">
+        select * from _words where id not in
+        <foreach collection="list" item="id" index="index" open="(" close=")" separator=",">
+            #{id}
+        </foreach>
+    </select>
+    <update id="addLike" parameterType="WordCtrl">
+        update _user_word set collection=1 where userid=#{userId} and wordid=#{wordId}
+    </update>
+    <update id="unLike" parameterType="WordCtrl">
+        update _user_word set collection=0 where userid=#{userId} and wordid=#{wordId}
+    </update>
+    <delete id="delWord" parameterType="WordCtrl">
+        delete from _user_word where userid=#{userId} and wordid=#{wordId}
+    </delete>
+    <insert id="addPublicWord" parameterType="Words" useGeneratedKeys="true" keyProperty="id">
+        insert into _words (word,translate,exp,speak)
+        values (#{word},#{translate},#{exp},#{speak});
+    </insert>
+    <insert id="addWord" parameterType="WordCtrl">
+        insert into _user_word (userid,wordid) values (#{userId},#{wordId})
+    </insert>
+    <update id="success" parameterType="WordCtrl">
+        update _user_word set history=1 where userid=#{userId} and wordid=#{wordId}
+    </update>
+    <insert id="addForMe" parameterType="WordCtrl">
+        insert into _user_word (userid,wordid,collection,history)
+        values (#{userId},#{wordId},0,0)
+    </insert>
+</mapper>

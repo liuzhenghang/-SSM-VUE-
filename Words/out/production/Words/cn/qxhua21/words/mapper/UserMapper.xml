@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.qxhua21.words.mapper.UserMapper">
+    <select id="Login" resultType="User" parameterType="User">
+        select id,username from _user where username=#{username} and password=#{password}
+    </select>
+    <insert id="register" parameterType="User" useGeneratedKeys="true" keyProperty="id">
+        insert _user set username=#{username},password=#{password}
+    </insert>
+</mapper>
